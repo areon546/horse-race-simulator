@@ -2,18 +2,16 @@
 public class HorseRacer {
 
     public static void main(String[] args) {
-        simulateRace();
-        // testCode();
+        // simulateRace();
+        testCode();
     }
 
     public static void testCode() {
+        Horse a = new Horse('a', "A", 0.7);
 
-        System.out.println("AAAAAAAAAAAAAAAAA\r");
+        Equipment.generateStaticData();
 
-        // System.out.print("\033\143");
-        System.out.print("\033[A");
-
-        System.out.println("CCBB");
+        a.customiseHorse();
 
     }
 

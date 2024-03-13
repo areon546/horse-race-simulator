@@ -10,11 +10,13 @@ public class Horse {
     // Fields of class Horse
     private String name;
     private char symbol;
-    private int distanceTravelled = 0;
+    private int distanceTravelled = 0, totalDistanceTravelled = 0;
     private boolean fallen = false;
     private double confidence;
     private Breed breed;
     private LinkedList<Equipment> inventory, equiped;
+
+    // private Rider r; // TODO should horses have riders?
 
     // Constructor of class Horse
     /**
@@ -71,6 +73,7 @@ public class Horse {
     }
 
     public void goBackToStart() {
+        this.totalDistanceTravelled += this.distanceTravelled;
         this.distanceTravelled = 0;
     }
 
@@ -78,15 +81,40 @@ public class Horse {
         this.distanceTravelled++;
     }
 
+    public boolean canMove() {
+        return Math.random() < (this.confidence);
+    }
+
+    public boolean canFall() {
+        return Math.random() < (0.1 * this.confidence * this.confidence);
+    }
+
     public void customiseHorse() {
         // this method lets users customise horse breed and equipment
-        double availableCapital = 5000.0;
+        double availableCapital = 700.0;
 
         // display a list of equipment
+        Equipment.printEquipment(this);
 
         // bought equipment goes to inventory
         // equiped equipment goes to equiped
 
         // show all equipment available
     }
+
+    public boolean equipmentFits(Equipment e) { // checks if the equipment fits a horse based on it's size
+        int horseSize = this.breed.getBreedSize();
+
+        switch (e.getEquipmentSize()) {
+            case "Small":
+                return (horseSize == 13 || horseSize == 14);
+            case "Medium":
+                return (horseSize == 15 || horseSize == 16);
+            case "Large":
+                return (horseSize == 17 || horseSize == 18);
+            default:
+                return false;
+        }
+    }
+
 }

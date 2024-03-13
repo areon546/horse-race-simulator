@@ -90,9 +90,9 @@ public class Race {
             for (Horse h : this.horses) {
                 if (h != null) { // TODO [x] problem: if a lane is empty, the program will crash
                     won = won || raceWonBy(h);
-                    allFallen = allFallen && h.hasFallen(); // TODO [x] currently a logic error, if a single horse
-                                                            // falls,
-                                                            // the game will end, we want to check if all horses fall
+                    allFallen = allFallen && h.canFall(); // TODO [x] currently a logic error, if a single horse
+                                                          // falls,
+                                                          // the game will end, we want to check if all horses fall
                 }
             }
 
@@ -128,16 +128,17 @@ public class Race {
         // if the horse has fallen it cannot move,
         // so only run if it has not fallen
 
-        if (!theHorse.hasFallen()) {
+        if (!theHorse.hasFallen()) { // TODO [x] made it easier to read this code and adjust the probability of
+                                     // moving vs fallen
             // the probability that the horse will move forward depends on the confidence;
-            if (Math.random() < theHorse.getConfidence()) {
+            if (theHorse.canFall()) {
                 theHorse.moveForward();
             }
 
             // the probability that the horse will fall is very small (max is 0.1)
             // but will also will depends exponentially on confidence
             // so if you double the confidence, the probability that it will fall is *2
-            if (Math.random() < (0.1 * theHorse.getConfidence() * theHorse.getConfidence())) {
+            if (theHorse.canFall()) {
                 theHorse.fall();
             }
         }
@@ -211,7 +212,7 @@ public class Race {
 
         // if the horse has fallen then print dead
         // else print the horse's symbol
-        if (theHorse.hasFallen()) {
+        if (theHorse.canFall()) {
             // System.out.print('\u2322'); // TODO make print X
             System.out.print('X');
         } else {
