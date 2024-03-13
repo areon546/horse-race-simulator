@@ -21,11 +21,18 @@ public class Race {
      * 
      * @param distance the length of the racetrack (in metres/yards...)
      */
-    public Race(int distance, int numHorses) {
+    public Race(int distance, int numHorses, String metersOrYards) {
         // initialise instance variables
-        this.raceLength = distance;
         this.horses = new Horse[numHorses];
         this.numberHorses = numHorses;
+
+        if (metersOrYards.equals("yards")) {
+            this.raceLength = (int) Math.floor(distance * 0.9144);
+        } else if (metersOrYards.equals("meters")) {
+            this.raceLength = distance;
+        } else {
+            this.raceLength = 0;
+        }
     }
 
     /**
@@ -51,6 +58,14 @@ public class Race {
     public void startRace() {
         // declare a local variable to tell us when the race is finished
         boolean finished = false;
+
+        if (this.raceLength < 1) { // TODO [x] if race length is less than 1, the race continues until horses fall
+            System.out.println("Race too short or incorrect unit entered. ");
+            // TODO [x] common alternative solution is to assign all values with setters,
+            // which can then have the validation inbuilt to them, so the programmer can
+            // just call the setter instead of writing the validation every time
+            return;
+        }
 
         // reset all the lanes (all horses not fallen and back to 0).
         for (Horse h : this.horses) {

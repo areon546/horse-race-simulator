@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 
 /**
  * Write a description of class Horse here.
@@ -12,6 +13,8 @@ public class Horse {
     private int distanceTravelled = 0;
     private boolean fallen = false;
     private double confidence;
+    private Breed breed;
+    private LinkedList<Equipment> inventory, equiped;
 
     // Constructor of class Horse
     /**
@@ -75,4 +78,15 @@ public class Horse {
         this.distanceTravelled++;
     }
 
+    public void customiseHorse() {
+        // this method lets users customise horse breed and equipment
+        double availableCapital = 5000.0;
+
+        // display a list of equipment
+
+        // bought equipment goes to inventory
+        // equiped equipment goes to equiped
+
+        // show all equipment available
+    }
 }

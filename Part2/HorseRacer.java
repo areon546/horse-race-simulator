@@ -18,7 +18,7 @@ public class HorseRacer {
     }
 
     public static void simulateRace() {
-        Race r = new Race(10, 3);
+        Race r = new Race(10, 3, "mets");
         Horse a = new Horse('a', "A", 0.7), b = new Horse('b', "B", 0.8), c = new Horse('c', "C", 0.8);
 
         r.addHorse(a, 1);
