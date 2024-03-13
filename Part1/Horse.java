@@ -60,7 +60,7 @@ public class Horse {
     }
 
     // Other methods of class Horse
-    public void fall() { // TODO make confidence decrease
+    public void fall() { // TODO [x] make confidence decrease
 
         this.setConfidence(this.confidence - 0.1);
 

@@ -198,7 +198,7 @@ public class Race {
         // else print the horse's symbol
         if (theHorse.hasFallen()) {
             // System.out.print('\u2322'); // TODO make print X
-            System.out.print('X'); // TODO make print X
+            System.out.print('X');
         } else {
             System.out.print(theHorse.getSymbol());
         }
