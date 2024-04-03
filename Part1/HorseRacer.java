@@ -7,24 +7,29 @@ public class HorseRacer {
     }
 
     public static void testCode() {
+        Horse a = new Horse('a', "A", 0.7);
+        Equipment.generateStaticData();
 
-        System.out.println("AAAAAAAAAAAAAAAAA\r");
-
-        // System.out.print("\033\143");
-        System.out.print("\033[A");
-
-        System.out.println("CCBB");
+        a.buyEquipment();
 
     }
 
     public static void simulateRace() {
-        Race r = new Race(10, 3, "mets");
+        Race r = new Race(10, 3, "meters"), r2 = new Race(25, 5, "meters");
         Horse a = new Horse('a', "A", 0.7), b = new Horse('b', "B", 0.8), c = new Horse('c', "C", 0.8);
 
-        r.addHorse(a, 1);
-        // r.addHorse(b, 2);
-        r.addHorse(c, 3);
+        Horse[] horses = { a, b, c };
+
+        for (int i = 0; i < 3; i++) {
+            r.addHorse(horses[i], i + 1);
+        }
 
         r.startRace();
+
+        for (int i = 0; i < 3; i++) {
+            r2.addHorse(horses[i], i + 1);
+        }
+
+        r2.startRace();
     }
 }

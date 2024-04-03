@@ -1,5 +1,10 @@
 import java.util.LinkedList;
-import java.util.Random;
+
+enum Size { // .values .name
+    Small,
+    Medium,
+    Large
+}
 
 public class Breed {
     private String breed;
@@ -17,6 +22,15 @@ public class Breed {
         this.tailColour = tailColour;
     }
 
+    public Breed(String breed, int size, String coatColour, String colourVariant, String hairColour) {
+        this.breed = breed;
+        this.breedSize = size;
+        this.coatColour = coatColour;
+        this.colourVariant = colourVariant;
+        this.maneColour = hairColour;
+        this.tailColour = hairColour;
+    }
+
     // use the given article as a basis for this class and horse variants
     // https://horseracingsense.com/12-common-horse-colors-patterns-pictures/
 
@@ -32,6 +46,7 @@ public class Breed {
 
         // String[] breeds = { "Thoroughbred", "Quarter Horse", "Arabian", "Appaloosa",
         // "Paint", "Mustang", "Morgan",
+
         // "Tennessee Walking Horse", "Standardbred", "Friesian", "Percheron",
         // "Clydesdale", "Shire" };
 
@@ -73,8 +88,20 @@ public class Breed {
         return this.breed;
     }
 
-    public int getBreedSize() {
-        return this.breedSize;
+    public Size getBreedSize() {
+        switch (this.breedSize) {
+            case 13:
+            case 14:
+                return Size.Small;
+            case 15:
+            case 16:
+                return Size.Medium;
+            case 17:
+            case 18:
+                return Size.Large;
+            default:
+                return null;
+        }
     }
 
 }
