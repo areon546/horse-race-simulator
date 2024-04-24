@@ -86,9 +86,8 @@ public class GUI extends JFrame {
 
     public static void mainMenu(JFrame prevF) {
         // remove previous frame
-        if (prevF != null) {
-            prevF.setVisible(false);
-        }
+        hidePreviousFrame(prevF);
+
         // assigns the frame
         mainMFrame = new JFrame();
 
@@ -104,7 +103,7 @@ public class GUI extends JFrame {
         settingsB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                settings(mainMFrame);
             }
         });
 
@@ -149,10 +148,10 @@ public class GUI extends JFrame {
 
     public static void settings(JFrame prevF) {
         // remove previous frame
-        prevF.setVisible(false);
+        hidePreviousFrame(prevF);
 
         // assigns the frame
-        settingsFrame = new JFrame();
+        settingsFrame = creatFrame("Settings", null);
 
         // creates the panel to put stuff on
         JPanel mPanel = new JPanel();
@@ -180,43 +179,13 @@ public class GUI extends JFrame {
             }
         });
 
-        JButton alpha = new JButton("Change Alphabet");
-        alpha.setFont(mFont);
-        alpha.setBackground(white);
-        alpha.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        JButton cpdfB = new JButton("Make PDF");
-        cpdfB.setFont(mFont);
-        cpdfB.setBackground(white);
-        cpdfB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        JButton logout = new JButton("Logout");
-        logout.setFont(mFont);
-        logout.setBackground(white);
-        logout.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
         JButton backB = new JButton("Back");
         backB.setFont(mFont);
         backB.setBackground(white);
         backB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                toggleBetweenFrames(settingsFrame, prevF);
             }
         });
 
@@ -224,10 +193,7 @@ public class GUI extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(5, 3, 5, 5));
         buttonPanel.add(defAcc);
-        buttonPanel.add(alpha);
-        buttonPanel.add(cpdfB);
         buttonPanel.add(ciphers);
-        buttonPanel.add(logout);
         buttonPanel.add(backB);
 
         JPanel backBPanel = new JPanel();
@@ -247,11 +213,11 @@ public class GUI extends JFrame {
 
     }
 
-    public static void outputTxt(JFrame prevFrame, String[][] textData, String name) {
+    public static void outputTxt(JFrame prevF, String[][] textData, String name) {
         // buttons: home back
 
-        // hide prev frame
-        prevFrame.setVisible(false);
+        // hide previous frame
+        hidePreviousFrame(prevF);
 
         // build current frame
         JFrame textOutFrame = new JFrame();
@@ -302,6 +268,29 @@ public class GUI extends JFrame {
         textOutFrame.setMinimumSize(new Dimension(pWidth, pHeight));
         textOutFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         textOutFrame.setVisible(true);
+    }
+
+    private static void hidePreviousFrame(JFrame prevFrame) {
+        if (prevFrame != null) {
+            prevFrame.setVisible(false);
+        }
+    }
+
+    private static void toggleBetweenFrames(JFrame frameToHide, JFrame frameToShow) {
+        hidePreviousFrame(frameToHide);
+        frameToShow.setVisible(true);
+    }
+
+    private static JFrame creatFrame(String title, JPanel[] panels) {
+        JFrame frame = new JFrame();
+
+        // Add the panels
+
+        frame.setTitle(title);
+        frame.setSize(pWidth, pHeight);
+        frame.setMinimumSize(new Dimension(pWidth, pHeight));
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        return frame;
     }
 
 }
