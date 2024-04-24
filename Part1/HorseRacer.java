@@ -14,7 +14,7 @@ public class HorseRacer {
     }
 
     public static void simulateRace() {
-        Race r = new Race(10, 3, "meters"), r2 = new Race(25, 5, "meters");
+        Race r = new Race(1);
         Horse a = new Horse('a', "A", 0.7), b = new Horse('b', "B", 0.8), c = new Horse('c', "C", 0.8);
 
         Horse[] horses = { a, b, c };
@@ -26,11 +26,5 @@ public class HorseRacer {
         r.startRace();
 
         System.out.println();
-
-        for (int i = 0; i < 3; i++) {
-            r2.addHorse(horses[i], i + 1);
-        }
-
-        // r2.startRace();
     }
 }
