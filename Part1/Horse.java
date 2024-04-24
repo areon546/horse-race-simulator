@@ -1,7 +1,10 @@
 import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
 
 /**
- * Write a description of class Horse here.
+ * This class is used to represent horses, and uses a vari
  * 
  * @author Artur Baran
  * @version v1 2023.03.10
@@ -31,37 +34,85 @@ public class Horse {
         this.breed = new Breed("Black Horse", 14, "Black", "Solid", "Gray");
     }
 
+    /**
+     * To string method for the Horse class, there to have an easy way to output the
+     * horse's name.
+     */
     public String toString() {
         return String.format("", this.name); // name, confidence, breed, total distance travelled?, equipment list?,
                                              // symbol?
     }
 
     // Other methods of class Horse
+
+    /**
+     * This method simulates a horse falling down, and decrease the horse's
+     * confidence as a result.
+     */
     public void fall() { // DONE: make confidence decrease
 
         this.setConfidence(this.confidence - 0.1);
         fallen = true;
     }
 
-    // DONE: if multiple races occur, all fall eventually
+    /**
+     * This method resets the distance travelled for the horse, and whether it's
+     * fallen yet or not.
+     */
     public void goBackToStart() {
+        // DONE: if multiple races occur, all fall eventually
         this.totalDistanceTravelled += this.distanceTravelled;
         this.distanceTravelled = 0;
         this.fallen = false;
     }
 
+    /**
+     * Moves the horse forward by one unit, and increases the distance travelled by
+     * 0.1.
+     */
     public void moveForward() {
         this.distanceTravelled++;
     }
 
+    /**
+     * This method checks if the horse has moved forward based on a random number.
+     * 
+     * @return boolean: Whether the horse has moved forward.
+     */
     public boolean canMove() {
         return Math.random() < (this.confidence);
     }
 
+    /**
+     * This method checks if the horse can fall based on a random number.
+     * 
+     * @return boolean: Whether the horse has fallen.
+     */
     public boolean canFall() {
         return Math.random() < (0.1 * this.confidence * this.confidence);
     }
 
+    /**
+     * This method is called if a horse wins a race, and it increases the amount of
+     * capital they have based on the earnings of that race for winning.
+     * 
+     * @param earnings: The amount of money the horse has earned by winning.
+     */
+    public void won(double earnings) {
+        setConfidence(confidence + 0.1);
+
+        capital += earnings;
+    }
+
+    // Equipment methods
+
+    /**
+     * This method checks if the horse can buy a piece of equipment based on the
+     * price of that equipment.
+     * 
+     * @param e: The equipment for the horse that the user wants to buy.
+     * @return boolean: Whether the horse can buy the equipment or not.
+     */
     public boolean canBuy(Equipment e) {
 
         if (e == null) {
@@ -75,8 +126,17 @@ public class Horse {
         return false;
     }
 
+    /**
+     * This method lets the user buy a piece of equipment for the horse, and then if
+     * they want to, they can later on equip said equipment.
+     * When bought, it gets added to the horse's inventory.
+     * 
+     * @param e: The equipment in question
+     */
     public void buyItem(Equipment e) {
         this.capital -= e.getCost();
+
+        System.out.printf("You have bought: %s, you have %.2f remaining. %n", e.toString(), capital);
 
         // ask if the user wants to equip this or not
         if (defaults.inputContinue("Do you want to equip this item or not?")) {
@@ -86,35 +146,69 @@ public class Horse {
         addToInventory(e);
     }
 
+    private void equipItem() {
+        // DONE: ask the user which item to equip
+        Map<Integer, Equipment> equipmentListMap = displayEquipment(this.inventory);
+        Integer itemChosen = defaults.inputInt("Please choose an item to equip: "); // ask the user to input a number
+        Equipment e = equipmentListMap.get(itemChosen);
+
+        System.out.println(e.toString());
+        this.equipItem(e);
+    }
+
+    private void unequipItem() {
+        // DONE: ask the user which item to equip
+        Map<Integer, Equipment> equipmentListMap = displayEquipment(this.equiped);
+        Integer itemChosen = defaults.inputInt("Please choose an item to unequip: "); // ask the user to input a number
+        Equipment e = equipmentListMap.get(itemChosen);
+
+        System.out.println(e.toString());
+        this.unequipItem(e);
+    }
+
     private void equipItem(Equipment e) {
-        equiped.add(e);
+        if (e != null && equipmentFits(e)) {
+            equiped.add(e);
+            System.out.printf("You have equiped %s. %n", e.toString());
+        }
     }
 
     private void unequipItem(Equipment e) {
-        equiped.remove(e);
+        if (e != null && equipmentFits(e)) {
+            equiped.remove(e);
+            System.out.printf("You have unequiped %s. %n", e.toString());
+        }
     }
 
     private void addToInventory(Equipment e) {
         inventory.add(e);
     }
 
-    public void won(double earnings) {
-        setConfidence(confidence + 0.1);
-
-        capital += earnings;
-    }
-
     /**
      * This method lets users customise the horse, by buying equipment,
      */
-    public void customiseHorse() { // TODO make customise horses
+    public void customiseHorse() { // TODO make customise horses fully functional
 
-        // buying equipment
-        buyEquipment();
-        // selling equipment
-        sellEquipment();
-        // equipping equipment
-        // unequipping equipment
+        if (defaults.inputContinue("Do you want to BUY equipment for your horse?")) {
+            // buying equipment
+            buyEquipment();
+        }
+
+        if (defaults.inputContinue("Do you want to SELL equipment for your horse?")) {
+            // selling equipment
+            sellEquipment();
+        }
+
+        if (defaults.inputContinue("Do you want to EQUIP equipment for your horse?")) {
+            // equipping equipment
+            equipItem();
+        }
+
+        if (defaults.inputContinue("Do you want to UNEQUIP equipment for your horse?")) {
+            // unequipping equipment
+            unequipItem();
+        }
+
     }
 
     /**
@@ -123,7 +217,6 @@ public class Horse {
     public void buyEquipment() { // DONE: finish customise horse
         String selectedCategory = "", selectedColour = "";
         boolean moreEquipment = true;
-        // this method lets users customise horse breed and equipment
 
         while (this.getCapital() > 0 && moreEquipment) {
 
@@ -141,8 +234,9 @@ public class Horse {
                     && defaults.inputContinue(String.format("Do you want to buy this piece of equipment? %n%s%n",
                             itemChosen.toString()))) {
                 // DONE: bought item -> inv, equiped item -> equiped
-                System.out.printf("You have bought %s, you have %d remaining. %n", itemChosen.toString(), capital);
                 this.buyItem(itemChosen);
+            } else {
+                System.out.println("You cannot buy this item.");
             }
 
             moreEquipment = defaults.inputContinue("Do you want to buy more equipment?");
@@ -198,18 +292,38 @@ public class Horse {
     }
 
     public void printEquipment() {
-        System.out.println("You have: ");
 
-        for (Equipment e : inventory) {
-            String output = e.toString();
+        if (inventory.size() > 0) {
+            System.out.println("You have: ");
 
-            if (equiped.contains(e)) {
-                output += ", equiped";
+            for (Equipment e : inventory) {
+                String output = e.toString();
+
+                if (equiped.contains(e)) {
+                    output += ", equiped";
+                }
+
+                System.out.println(output);
             }
+        } else {
+            System.out.println("You have no equipment.");
+        }
+    }
 
-            System.out.println(output);
+    public Map<Integer, Equipment> displayEquipment(LinkedList<Equipment> equipmentList) {
+        Map<Integer, Equipment> equipmentHashMap = new HashMap<Integer, Equipment>();
+        Iterator<Equipment> it = equipmentList.iterator();
+        Integer i = 0;
+
+        while (it.hasNext()) {
+            Equipment item = it.next();
+            System.out.printf("%d: %s%n", i, item.toString());
+
+            equipmentHashMap.put(i, item);
+            i++;
         }
 
+        return equipmentHashMap;
     }
 
     // Getters / Accessors

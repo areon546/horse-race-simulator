@@ -118,6 +118,7 @@ public class defaults {
 
         }
         n = Integer.parseInt(input);
+        System.out.println(n);
 
         return n;
     } // END inputInt

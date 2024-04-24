@@ -10,8 +10,7 @@ public class HorseRacer {
         Horse a = new Horse('a', "A", 0.7);
         Equipment.generateStaticData();
 
-        a.buyEquipment();
-
+        a.customiseHorse();
     }
 
     public static void simulateRace() {
@@ -26,10 +25,12 @@ public class HorseRacer {
 
         r.startRace();
 
+        System.out.println();
+
         for (int i = 0; i < 3; i++) {
             r2.addHorse(horses[i], i + 1);
         }
 
-        r2.startRace();
+        // r2.startRace();
     }
 }

@@ -16,7 +16,7 @@ public class Race {
     private Horse winner;
     private double earnings = 100;
 
-    private static char boundaryChar = '=', emptyLane = ' ', start = ']', stop = '|';
+    private static char boundaryChar = '=', emptyLane = ' ', start = '|', stop = '|';
 
     /**
      * Constructor for objects of class Race
@@ -42,6 +42,12 @@ public class Race {
     }
 
     // a default constructor for the Race class
+    /**
+     * The default constructor for the race class if the number of lanes in a race
+     * is not specified. It also assumes the units to be meters.
+     * 
+     * @param distance
+     */
     public Race(int distance) {
         this(distance, 3, "meters");
     }
@@ -78,7 +84,7 @@ public class Race {
             return;
         }
 
-        // reset all the lanes (all horses not fallen and back to 0).
+        // resets all the lanes (all horses not fallen and back to 0).
         for (Horse h : this.horses) {
             if (h != null) {
                 h.goBackToStart();
@@ -180,7 +186,8 @@ public class Race {
         // System.out.print('\u000C'); // clear the terminal window
         // TODO make clear terminal window,
 
-        System.out.print("\033\143");
+        // System.out.print("\033\143");
+        System.out.print("\r");
         // TODO this works due to terminal escape sequences,
         // it has a weird artifact that i dont the origin of
         // i dont like this fix, mainly because i dont really understand it
@@ -204,20 +211,22 @@ public class Race {
         System.out.println();
     }
 
-    /**
-     * print a horse's lane during the race
-     * for example
-     * | X |
-     * to show how far the horse has run
-     */
-    private void printLane(Horse theHorse) {
-        // TODO it makes more sense to have printLane(laneNumber) instead of
-        // printLane(HORSE)
+    private void printLane(int laneNumber) {
+        printLane(horses[laneNumber - 1]);
+    }
 
-        // TODO currently, whenether a string needs to be outputed, it is printed immediately. instead
-        // to maintain future compatibility, instead it should be stored in a buffer of sorts, which can then
-        // be printed all at once
-        // this would make it easier to implement a GUI since the same method call can be made, however just returning the information that needs to be repeatedly printed - although, this might not even be 
+    // TODO it makes more sense to have printLane(laneNumber) instead of
+    // printLane(HORSE)
+
+    // TODO currently, whenether a string needs to be outputed, it is printed
+    // immediately. instead
+    // to maintain future compatibility, instead it should be stored in a buffer of
+    // sorts, which can then
+    // be printed all at once
+    // this would make it easier to implement a GUI since the same method call can
+    // be made, however just returning the information that needs to be repeatedly
+    // printed - although, this might not even be
+    private void printLane(Horse theHorse) {
 
         // calculate how many spaces are needed before
         // and after the horse
@@ -270,10 +279,8 @@ public class Race {
      * @param aChar the character to Print
      */
     private void multiplePrint(char aChar, int times) {
-        int i = 0;
-        while (i < times) {
+        for (int i = 0; i < times; i++) {
             System.out.print(aChar);
-            i = i + 1;
         }
     }
 
