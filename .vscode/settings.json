@@ -1,7 +1,7 @@
 {
     "java.project.sourcePaths": [
+        "Part2",
         "Part1",
-        "Old",
-        "Part2"
+        "Old"
     ]
 }
