@@ -3,7 +3,6 @@ import javax.swing.*;
 
 public class HorseRace extends JFrame {
     private JFrame frame;
-    private JPanel outerJPanel;
     private int screenWidth, screenHeight;
 
     public HorseRace(int scWidth, int scHeight) {
@@ -12,13 +11,14 @@ public class HorseRace extends JFrame {
 
         // Creating instance of JFrame
         this.frame = new JFrame();
-        this.outerJPanel = new JPanel();
 
         // 400 width and 500 height
         frame.setSize(screenWidth, screenHeight);
 
         // using no layout managers
-        frame.setLayout(null);
+        // frame.setLayout(new ());
+
+        frame.setVisible(true);
 
     }
 

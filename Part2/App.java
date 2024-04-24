@@ -7,11 +7,13 @@ public class App {
 
     // Main driver method
     public static void main(String[] args) {
-        HorseRace r = new HorseRace(400, 400);
+        Race r = new Race(15);
+
+        // HorseRace r = new HorseRace(400, 400);
 
         // adding button in JFrame
-        r.addButtons(r.createButton());
+        // r.addButtons(r.createButton());
 
-        r.setVisible(true);
+        // r.setVisible(true);
     }
 }
