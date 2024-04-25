@@ -214,10 +214,14 @@ public class Race {
         // TODO it makes more sense to have printLane(laneNumber) instead of
         // printLane(HORSE)
 
-        // TODO currently, whenether a string needs to be outputed, it is printed immediately. instead
-        // to maintain future compatibility, instead it should be stored in a buffer of sorts, which can then
+        // TODO currently, whenether a string needs to be outputed, it is printed
+        // immediately. instead
+        // to maintain future compatibility, instead it should be stored in a buffer of
+        // sorts, which can then
         // be printed all at once
-        // this would make it easier to implement a GUI since the same method call can be made, however just returning the information that needs to be repeatedly printed - although, this might not even be 
+        // this would make it easier to implement a GUI since the same method call can
+        // be made, however just returning the information that needs to be repeatedly
+        // printed - although, this might not even be
 
         // calculate how many spaces are needed before
         // and after the horse
