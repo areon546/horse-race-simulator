@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GUI extends JFrame {
 
+    private static Race race;
+
     // swing attributes
     private static JFrame homeFrame, prevFrame, currentFrame;
     private static JFrame trackFrame, horseFrame;
@@ -45,8 +47,8 @@ public class GUI extends JFrame {
                 raceTrackLabel.setText("Wait for " + i + " sec");
                 i--;
             }
-
-            // try {
+ 
+            // {
             //     TimeUnit.MILLISECONDS.sleep(300);
             //     action.actionPerformed(event);
             // } catch (Exception e) {
