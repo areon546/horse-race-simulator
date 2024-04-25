@@ -22,18 +22,23 @@ public class Race {
      * Constructor for objects of class Race
      * Initially there are no horses in the lanes
      * 
-     * @param distance the length of the racetrack (in metres/yards...)
+     * @param raceTrackLength the length of the racetrack in metres
+     * @param numLanes        the number of lanes that horses can run on, a upper
+     *                        value to the number of horses that can be added
+     * @param unit            the unit of the racetrack length, measured in meters,
+     *                        however it accepts the value "yards", upon which the
+     *                        race length will be the equivalent in meters
      */
-    public Race(int distance, int numHorses, String metersOrYards) {
+    public Race(int raceTrackLength, int numLanes, String unit) {
         // initialise instance variables
-        this.horses = new Horse[numHorses];
-        this.numberHorses = numHorses;
+        this.horses = new Horse[numLanes];
+        this.numberHorses = numLanes;
 
         // calculates race length in meters
-        if (metersOrYards.equals("yards")) {
-            this.raceLength = (int) Math.floor(distance * 0.9144);
-        } else if (metersOrYards.equals("meters")) {
-            this.raceLength = distance;
+        if (unit.equals("yards")) {
+            this.raceLength = (int) Math.ceil(raceTrackLength * 0.9144);
+        } else if (unit.equals("meters")) {
+            this.raceLength = raceTrackLength;
         } else {
             this.raceLength = 0;
         }
@@ -46,10 +51,22 @@ public class Race {
      * The default constructor for the race class if the number of lanes in a race
      * is not specified. It also assumes the units to be meters.
      * 
-     * @param distance
+     * @param raceTrackLength the length of the racetrack in metres
      */
-    public Race(int distance) {
-        this(distance, 3, "meters");
+    public Race(int raceTrackLength) {
+        this(raceTrackLength, 3, "meters");
+    }
+
+    /**
+     * A constructor for the race class if the unit is not specified. It assumes the
+     * unit is in meters.
+     * 
+     * @param raceTrackLength the length of the racetrack in metres
+     * @param numLanes        the number of lanes that horses can run on, a upper
+     *                        value to the number of horses that can be added
+     */
+    public Race(int raceTrackLength, int numLanes) {
+        this(raceTrackLength, numLanes, "meters");
     }
 
     /**
@@ -59,7 +76,7 @@ public class Race {
      * @param laneNumber the lane that the horse will be added to
      */
     public void addHorse(Horse theHorse, int laneNumber) { // DONE: add functionality for more than 3 lanes
-        if (laneNumber > this.numberHorses || laneNumber == 0) {
+        if (laneNumber > this.numberHorses || laneNumber <= 0) {
             System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
         }
 
@@ -84,15 +101,17 @@ public class Race {
             return;
         }
 
+        if (this.noHorses()) { // prevents a race from starting if there are no horses
+            System.out.println("No horses have been added to this race.");
+            return;
+        }
+
         // resets all the lanes (all horses not fallen and back to 0).
         for (Horse h : this.horses) {
             if (h != null) {
                 h.goBackToStart();
             }
         }
-
-        // print the initial state
-        printRace();
 
         while (!finished) {
             boolean allFallen = true, won = false;
@@ -282,6 +301,21 @@ public class Race {
         for (int i = 0; i < times; i++) {
             System.out.print(aChar);
         }
+    }
+
+    /**
+     * Check if there are any horses in horses array.
+     * 
+     * @return bool: false if there is a single horse in the race
+     */
+    private boolean noHorses() {
+        for (Horse h : this.horses) {
+            if (h != null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
