@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 public class GUI extends JFrame {
 
     private static Race race;
+    private static int numberOfHorses = 0;
 
     // swing attributes
     private static JFrame homeFrame, prevFrame, currentFrame;
@@ -100,29 +101,13 @@ public class GUI extends JFrame {
 
         JButton startRaceButton = createButton("Start Race", white, mFont, action);
 
-        /*
-         * raceTrackLabel.setText("HI");
-         * int i = 0;
-         * while (i < 5) {
-         * 
-         * raceTrackLabel.setText("" + i);
-         * raceTrackLabel.revalidate();
-         * raceTrackLabel.repaint();
-         * try {
-         * TimeUnit.MILLISECONDS.sleep(300);
-         * } catch (Exception exception) {
-         * }
-         * i++;
-         * }
-         */
-
         raceTrackPanel.add(startRaceButton, BorderLayout.SOUTH);
 
         // adds buttons
         JPanel buttonPanel = createPanel(new GridLayout(1, 2, 5, 50));
 
         buttonPanel.add(horseButton);
-        buttonPanel.add(trackButton);
+        // buttonPanel.add(trackButton);
 
         mPanel.add(raceTrackPanel, BorderLayout.NORTH);
         mPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -180,7 +165,7 @@ public class GUI extends JFrame {
         textOutFrame.setVisible(true);
     }
 
-    private static void goToAdjustHorses() {
+    public static void goToAdjustHorses() {
         // TODO make it let the user adjust the horses
 
         // remove previous frame
@@ -191,12 +176,64 @@ public class GUI extends JFrame {
 
         // creates the panel to put stuff on
         JPanel mPanel = createPanel(new BorderLayout(), offBlue);
+        JPanel customisationOptions = createPanel(new GridLayout(5, 3, 5, 5));
 
+        JLabel horseNameLabel = createLabel("Horse Name", mFont);
+        JTextField horseName = createTextField("", mFont);
+
+        JLabel horseSymbolLabel = createLabel("Horse Symbol", mFont);
+        JTextField horseSymbol = createTextField("", mFont);
+
+        JLabel horseConfidenceLabel = createLabel("Horse Confidence: Input a decimal", mFont);
+        JTextField horseConfidence = createTextField("", mFont);
+
+        JLabel horseListLabel = createLabel("Select a Horse", mFont);
+        JComboBox horseList; // combo box if there are horses
         // creates the buttons on the main menu
-        JButton defAcc = createButton("A", white, mFont, new ActionListener() {
+        if (race != null && !race.noHorses()) {
+
+            // add horses to the list
+            horseList = createComboBox(mFont);
+            Horse[] horses = race.getHorses();
+
+            // loop through horses
+            for (Horse horse : horses) {
+                if (horse != null) {
+                    horseList.addItem(horse.getName());
+                }
+            }
+
+            horseList.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (horseList.getSelectedItem() != null) {
+                        // set values based on the horse object
+                        Horse selectedHorse = GUI.race.getHorses()[GUI.race
+                                .findHorse((String) horseList.getSelectedItem())];
+                        horseName.setText(selectedHorse.getName());
+                        horseSymbol.setText(selectedHorse.getSymbol() + "");
+                        horseConfidence.setText(selectedHorse.getConfidence() + "");
+                    }
+                }
+
+            });
+            customisationOptions.add(horseListLabel); // add combo box to the panel
+            customisationOptions.add(horseList); // add combo box to the panel
+        }
+
+        JButton newHorse = createButton("New Horse", white, mFont, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int emptyIndex = GUI.race.firstEmptyHorse();
+                GUI.race.addHorse(new Horse(horseSymbol.getText().charAt(0), horseName.getText(), 0.3), emptyIndex);
+            }
+        });
 
+        JButton saveHorse = createButton("Save Horse", white, mFont, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int emptyIndex = GUI.race.findHorse(horseName.getText());
+                GUI.race.addHorse(new Horse(horseSymbol.getText().charAt(0), horseName.getText(), 0.3), emptyIndex);
             }
         });
 
@@ -207,15 +244,25 @@ public class GUI extends JFrame {
             }
         });
 
+        // adds labels and text fields
+        customisationOptions.add(horseNameLabel);
+        customisationOptions.add(horseName);
+        customisationOptions.add(horseSymbolLabel);
+        customisationOptions.add(horseSymbol);
+        customisationOptions.add(horseConfidenceLabel);
+        customisationOptions.add(horseConfidence);
+
         // adds buttons
-        JPanel buttonPanel = createPanel(new GridLayout(5, 3, 5, 5));
-        buttonPanel.add(defAcc);
-        buttonPanel.add(backB);
+        if (GUI.race != null && GUI.race.firstEmptyHorse() != -1) {
+            customisationOptions.add(newHorse);
+        } else {
+            customisationOptions.add(saveHorse);
+        }
 
         JPanel backBPanel = createPanel(new GridLayout(1, 1, 5, 5));
         backBPanel.add(backB);
 
-        mPanel.add(buttonPanel, BorderLayout.WEST);
+        mPanel.add(customisationOptions, BorderLayout.NORTH);
         mPanel.add(backBPanel, BorderLayout.SOUTH);
 
         horseFrame = createFrame("Settings", new JPanel[] { mPanel }, WindowConstants.EXIT_ON_CLOSE);
@@ -223,7 +270,7 @@ public class GUI extends JFrame {
 
     }
 
-    private static void goToAdjustTrack() {
+    public static void goToAdjustTrack() {
 
     }
 
@@ -277,16 +324,28 @@ public class GUI extends JFrame {
         return panel;
     }
 
+    private static JLabel createLabel(String text, Font font) {
+        JLabel label = new JLabel(text);
+        label.setFont(font);
+        return label;
+    }
+
     private static JTextArea createTextArea(String text, Font font) {
         JTextArea label = new JTextArea(text);
         label.setFont(font);
         return label;
     }
 
-    private static JTextField createTextField(Font font) {
-        JTextField textField = new JTextField();
-        textField.setFont(font);
-        return textField;
+    private static JTextField createTextField(String text, Font font) {
+        JTextField label = new JTextField(text);
+        label.setFont(font);
+        return label;
+    }
+
+    private static JComboBox createComboBox(Font font) {
+        JComboBox box = new JComboBox();
+        box.setFont(font);
+        return box;
     }
 
 }

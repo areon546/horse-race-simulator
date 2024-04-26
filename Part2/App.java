@@ -18,5 +18,6 @@ public class App {
         GUI.setRace(r);
 
         GUI.home();
+        // GUI.goToAdjustHorses();
     }
 }
