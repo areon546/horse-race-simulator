@@ -25,6 +25,11 @@ public class Horse {
 
     /**
      * Constructor for objects of class Horse
+     * 
+     * @param horseSymbol     The symbol that represents the horse during a Race.
+     * @param horseName       The name of the horse.
+     * @param horseConfidence The confidence of the horse, which represents their
+     *                        speed and probability to fall.
      */
     public Horse(char horseSymbol, String horseName, double horseConfidence) {
         this.symbol = horseSymbol;
@@ -32,6 +37,21 @@ public class Horse {
         this.setConfidence(horseConfidence);
 
         this.breed = new Breed("Black Horse", 14, "Black", "Solid", "Gray");
+    }
+
+    /**
+     * Constructor for objects of class Horse
+     * 
+     * @param horseSymbol     The symbol that represents the horse during a Race.
+     * @param horseName       The name of the horse.
+     * @param horseConfidence The confidence of the horse, which represents their
+     *                        speed and probability to fall.
+     * @param horseBreed      The breed of the horse, which represents their
+     *                        colours. Not currently displayed.
+     */
+    public Horse(char horseSymbol, String horseName, double horseConfidence, Breed horseBreed) {
+        this(horseSymbol, horseName, horseConfidence);
+        this.breed = horseBreed;
     }
 
     /**
