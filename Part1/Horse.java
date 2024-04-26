@@ -7,7 +7,7 @@ import java.util.Iterator;
  * This class is used to represent horses, and uses a vari
  * 
  * @author Artur Baran
- * @version v1 2023.03.10
+ * @version v1.7 2023.04.26
  */
 
 public class Horse {
@@ -39,8 +39,8 @@ public class Horse {
      * horse's name.
      */
     public String toString() {
-        return String.format("", this.name); // name, confidence, breed, total distance travelled?, equipment list?,
-                                             // symbol?
+        return String.format("%s", this.name); // name, confidence, breed, total distance travelled?, equipment list?,
+                                               // symbol?
     }
 
     // Other methods of class Horse
@@ -50,7 +50,6 @@ public class Horse {
      * confidence as a result.
      */
     public void fall() { // DONE: make confidence decrease
-
         this.setConfidence(this.confidence - 0.1);
         fallen = true;
     }

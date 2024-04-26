@@ -42,8 +42,6 @@ public class Race {
         } else {
             this.raceLength = 0;
         }
-
-        // TODO: calculates earnings for winning horse
     }
 
     // a default constructor for the Race class
