@@ -1,8 +1,12 @@
 # Horse Racing Simulator OOP Coursework
 
 Part 1 contains a command line implementation of a horse racer simulator based on the assigned files given to complete the coursework. 
+Breed.java is used to determine horse breed, however has no affect on the Race class. 
+Equipment.java is an optional feature that you can add onto a Horse. Current this has no affect on Horse speed, however is planned to affect speed when the movement system is changed. You can buy sell, equip, or unequip equipment for a Horse with the method 'horseObject.customiseHorse()'. Each horse has an amount of starting capital, and can win money if they place well in a race. Currently only the winner receives any money in a Race. 
 
-part 2 contains a GUI implementation of the same horse racing simulation, but with a couple additional classes, and a GUI (eventually)
+Part 2 contains a GUI implementation of the same horse racing simulation, but with a couple additional classes, and a GUI. 
+GUI.java is used to start races. 
+App.java runs GUI.java as a test. 
 
 ## Setup steps:
 

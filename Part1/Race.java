@@ -13,6 +13,8 @@ public class Race {
     private Horse[] horses; // DONE: finish implementation of horses array - had issues determining when
                             // the
                             // race is over
+    private String[] raceTrack;
+
     private Horse winner;
     private double earnings = 100;
 
@@ -33,6 +35,7 @@ public class Race {
         // initialise instance variables
         this.horses = new Horse[numLanes];
         this.numberHorses = numLanes;
+        this.raceTrack = initialiseRaceTrack();
 
         // calculates race length in meters
         if (unit.equals("yards")) {
@@ -202,21 +205,26 @@ public class Race {
 
         clearTerminalWindow();
 
-        multiplePrint(boundaryChar, raceLength + 3); // top edge of track
-        System.out.println();
-
-        for (Horse h : this.horses) { // DONE: replaced lane1Horse with horses array
-            // DONE: fix error if horse is null
-            if (h == null) {
-                printEmptyLane(); // DONE: make it print an empty row if the horse isnt present in that lane
-            } else {
-                printLane(h);
-            }
-            System.out.println();
+        for (int i = 0; i < this.numberHorses + 2; i++) {
+            printLane(i);
         }
 
-        multiplePrint(boundaryChar, raceLength + 3); // bottom edge of track
-        System.out.println();
+        // multiplePrint(boundaryChar, raceLength + 3); // top edge of track
+        // System.out.println();
+
+        // for (Horse h : this.horses) { // DONE: replaced lane1Horse with horses array
+        // // DONE: fix error if horse is null
+        // if (h == null) {
+        // printEmptyLane(); // DONE: make it print an empty row if the horse isnt
+        // present in that lane
+        // } else {
+        // printLane(h);
+        // }
+        // System.out.println();
+        // }
+
+        // multiplePrint(boundaryChar, raceLength + 3); // bottom edge of track
+        // System.out.println();
     }
 
     private void clearTerminalWindow() {
@@ -237,76 +245,31 @@ public class Race {
     }
 
     private void printLane(int laneNumber) {
-        printLane(horses[laneNumber - 1]);
-    }
+        if (laneNumber == 0 || laneNumber == this.raceLength + 2) { // if there is a boundary
+            System.out.println(raceTrack[laneNumber]);
+            return;
+        } else if (horses[laneNumber - 1] == null) { // if the horse isnt present in that lane
+            System.out.println(raceTrack[laneNumber]);
+            return;
+        } else { // if there is a horse
+            Horse theHorse = horses[laneNumber - 1];
 
-    // TODO it makes more sense to have printLane(laneNumber) instead of
-    // printLane(HORSE)
-
-    // TODO currently, whenether a string needs to be outputed, it is printed
-    // immediately. instead
-    // to maintain future compatibility, instead it should be stored in a buffer of
-    // sorts, which can then
-    // be printed all at once
-    // this would make it easier to implement a GUI since the same method call can
-    // be made, however just returning the information that needs to be repeatedly
-    // printed - although, this might not even be
-    private void printLane(Horse theHorse) {
-
-        // calculate how many spaces are needed before
-        // and after the horse
-        int spacesBefore = theHorse.getDistanceTravelled();
-        int spacesAfter = this.raceLength - theHorse.getDistanceTravelled();
-
-        // print a | for the beginning of the lane
-        System.out.print(Race.start);
-
-        // print the spaces before the horse
-        multiplePrint(Race.emptyLane, spacesBefore);
-
-        // if the horse has fallen then print dead
-        // else print the horse's symbol
-        if (theHorse.hasFallen()) {
-            // System.out.print('\u2322'); // DONE: make print X
-            System.out.print('X');
-        } else {
-            System.out.print(theHorse.getSymbol());
+            recreateLane(laneNumber - 1);
+            System.out.print(raceTrack[laneNumber]);
+            System.out.printf(" %s (Confidence: %.1f)%n", theHorse.getName(),
+                    theHorse.getConfidence());
         }
 
-        // print the spaces after the horse
-        multiplePrint(Race.emptyLane, spacesAfter);
-
-        // print the | for the end of the track
-        System.out.print(Race.stop);
-
-        // DONE: print the name and confidence of the horse
-        System.out.printf(" %s (Confidence: %.1f)", theHorse.getName(), theHorse.getConfidence());
+        // printLane(horses[laneNumber - 1]);
     }
 
-    private void printEmptyLane() {
-        int spaces = this.raceLength + 1;
-
-        // print a | for the beginning of the lane
-        System.out.print(start);
-
-        // print the empty lane
-        multiplePrint(emptyLane, spaces);
-
-        // print the | for the end of the track
-        System.out.print(stop);
-
-    }
-
-    /***
-     * print a character a given number of times.
-     * e.g. printmany('x',5) will print: xxxxx
-     * 
-     * @param aChar the character to Print
-     */
-    private void multiplePrint(char aChar, int times) {
+    private String concatMultiple(char aChar, int times) {
+        String output = "";
         for (int i = 0; i < times; i++) {
-            System.out.print(aChar);
+            output += aChar;
         }
+
+        return output;
     }
 
     /**
@@ -322,6 +285,63 @@ public class Race {
         }
 
         return true;
+    }
+
+    private String[] initialiseRaceTrack() {
+        String[] track = new String[this.numberHorses + 2];
+
+        track[0] = createRaceTrackBoundary();
+        track[track.length - 1] = createRaceTrackBoundary();
+
+        for (int i = 0; i < this.numberHorses; i++) {
+            track[i + 1] = createLane(i);
+        }
+
+        return track;
+    }
+
+    private String createLane(int horseLane) {
+        String output = "" + Race.start;
+
+        if (this.horses[horseLane] == null) { // if there is no horse, create an empty lane
+            output += concatMultiple(emptyLane, this.raceLength + 3);
+        } else { // if there is a horse, create a lane with the horse
+            Horse theHorse = this.horses[horseLane];
+            // output += this.horses[horseLane].getSymbol();
+            // output += concatMultiple(emptyLane, this.raceLength - 3);
+
+            // calculate how many spaces are needed before
+            // and after the horse
+            int spacesBefore = theHorse.getDistanceTravelled();
+            int spacesAfter = this.raceLength - theHorse.getDistanceTravelled();
+
+            // print a | for the beginning of the lane
+
+            // print the spaces before the horse
+            output += concatMultiple(Race.emptyLane, spacesBefore);
+
+            // if the horse has fallen then print dead
+            // else print the horse's symbol
+            if (theHorse.hasFallen()) {
+                output += 'X';
+            } else {
+                output += theHorse.getSymbol();
+            }
+
+            // print the spaces after the horse
+            output += concatMultiple(Race.emptyLane, spacesAfter);
+        }
+
+        output += Race.stop;
+        return output;
+    }
+
+    private void recreateLane(int horseLane) {
+        this.raceTrack[horseLane + 1] = createLane(horseLane);
+    }
+
+    private String createRaceTrackBoundary() {
+        return concatMultiple(boundaryChar, this.raceLength + 5);
     }
 
 }

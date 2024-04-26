@@ -48,7 +48,7 @@ public class HorseRacer {
 
         r.startRace();
 
-        System.out.println();
+        // System.out.println();
     }
 
 }
