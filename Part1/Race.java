@@ -202,16 +202,7 @@ public class Race {
      */
     private void printRace() {
 
-        // System.out.print('\u000C'); // clear the terminal window
-        // TODO make clear terminal window,
-
-        // System.out.print("\033\143");
-        System.out.print("\r");
-        // TODO this works due to terminal escape sequences,
-        // it has a weird artifact that i dont the origin of
-        // i dont like this fix, mainly because i dont really understand it
-
-        // System.out.print("\u000C");
+        clearTerminalWindow();
 
         multiplePrint(boundaryChar, raceLength + 3); // top edge of track
         System.out.println();
@@ -228,6 +219,23 @@ public class Race {
 
         multiplePrint(boundaryChar, raceLength + 3); // bottom edge of track
         System.out.println();
+    }
+
+    private void clearTerminalWindow() {
+        // clear the terminal window
+        System.out.print("\033\143");
+
+        // other attemps
+        // System.out.print('\u000C');
+        // TODO make clear terminal window,
+
+        // System.out.print("\r");
+        // TODO this works due to terminal escape sequences,
+        // it has a weird artifact that i dont the origin of
+        // i dont like this fix, mainly because i dont really understand it
+
+        // System.out.print("\u000C");
+
     }
 
     private void printLane(int laneNumber) {
