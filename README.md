@@ -12,7 +12,7 @@ App.java runs GUI.java as a test.
 
 1. Unzip the zip downloaded file. 
 2. Run HorseRacer.class in the folder Part1, with the command 'java HorseRacer', for a demonstration of the program in the command line. 
-3. Run HorseRacerGUI.class in the folder Part2, with the command 'java HorseRacerGUI' from the command line, for a demonstration of the program as a GUI. // TODO not currently implemented, will probably cause bugs because i put everything on the same path
+3. Run HorseRacerGUI.class in the folder Part2, with the command 'java HorseRacerGUI' from the command line, for a demonstration of the program as a GUI. 
 
 ## Dependencies
 Java

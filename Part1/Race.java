@@ -17,6 +17,7 @@ public class Race {
 
     private Horse winner;
     private double earnings = 100;
+    private boolean finished = false;
 
     private static char boundaryChar = '=', emptyLane = ' ', start = '|', stop = '|';
 
@@ -92,27 +93,11 @@ public class Race {
      */
     public void startRace() {
         // declare a local variable to tell us when the race is finished
-        boolean finished = false;
 
-        if (this.raceLength < 1) { // DONE: if race length is less than 1, the race continues until horses fall
-            System.out.println("Race too short or incorrect unit entered. ");
-            // DONE: common alternative solution is to assign all values with setters,
-            // which can then have the validation inbuilt to them, so the programmer can
-            // just call the setter instead of writing the validation every time
+        if (!isRaceValid()) {
             return;
         }
-
-        if (this.noHorses()) { // prevents a race from starting if there are no horses
-            System.out.println("No horses have been added to this race.");
-            return;
-        }
-
-        // resets all the lanes (all horses not fallen and back to 0).
-        for (Horse h : this.horses) {
-            if (h != null) {
-                h.goBackToStart();
-            }
-        }
+        resetRace();
 
         while (!finished) {
             boolean allFallen = true, won = false;
@@ -152,6 +137,11 @@ public class Race {
             System.out.println("All of the horses fell, the race cannot continue. ");
         }
 
+    }
+
+    public void startRaceGUI() {
+        GUI.setRace(this);
+        GUI.home();
     }
 
     /**
@@ -209,22 +199,6 @@ public class Race {
             printLane(i);
         }
 
-        // multiplePrint(boundaryChar, raceLength + 3); // top edge of track
-        // System.out.println();
-
-        // for (Horse h : this.horses) { // DONE: replaced lane1Horse with horses array
-        // // DONE: fix error if horse is null
-        // if (h == null) {
-        // printEmptyLane(); // DONE: make it print an empty row if the horse isnt
-        // present in that lane
-        // } else {
-        // printLane(h);
-        // }
-        // System.out.println();
-        // }
-
-        // multiplePrint(boundaryChar, raceLength + 3); // bottom edge of track
-        // System.out.println();
     }
 
     private void clearTerminalWindow() {
@@ -256,8 +230,6 @@ public class Race {
 
             recreateLane(laneNumber - 1);
             System.out.print(raceTrack[laneNumber]);
-            System.out.printf(" %s (Confidence: %.1f)%n", theHorse.getName(),
-                    theHorse.getConfidence());
         }
 
         // printLane(horses[laneNumber - 1]);
@@ -304,7 +276,8 @@ public class Race {
         String output = "" + Race.start;
 
         if (this.horses[horseLane] == null) { // if there is no horse, create an empty lane
-            output += concatMultiple(emptyLane, this.raceLength + 3);
+            output += concatMultiple(emptyLane, this.raceLength + 3) + Race.stop;
+            return output;
         } else { // if there is a horse, create a lane with the horse
             Horse theHorse = this.horses[horseLane];
             // output += this.horses[horseLane].getSymbol();
@@ -330,10 +303,12 @@ public class Race {
 
             // print the spaces after the horse
             output += concatMultiple(Race.emptyLane, spacesAfter);
+            output += Race.stop +
+                    String.format(" %s (Confidence: %.1f)", theHorse.getName(),
+                            theHorse.getConfidence());
+            return output;
         }
 
-        output += Race.stop;
-        return output;
     }
 
     private void recreateLane(int horseLane) {
@@ -344,4 +319,85 @@ public class Race {
         return concatMultiple(boundaryChar, this.raceLength + 5);
     }
 
+    public String getNextFrame() {
+        boolean allFallen = true, won = false;
+
+        for (Horse h : this.horses) {
+            if (h != null) {
+
+                // move each horse
+                moveHorse(h);
+
+                // DONE: problem: if a lane is empty, the program will crash
+                // if any of the three horses has won, or all are down, the race is finished
+                won = won || raceWonBy(h);
+                allFallen = allFallen && h.hasFallen(); // DONE: currently a logic error, if a single horse
+                                                        // falls,
+                                                        // the game will end, we want to check if all horses fall
+            }
+        }
+
+        // DONE: optimised from an if (x==true) y=true to y=x
+        finished = won || allFallen;
+
+        for (int i = 0; i < this.numberHorses; i++) {
+            // need to update the horse lanes
+            raceTrack[i + 1] = createLane(i);
+        }
+
+        return raceTrackString();
+    }
+
+    private void resetRace() {
+        this.finished = false;
+        this.winner = null;
+
+        // resets all the lanes (all horses not fallen and back to 0).
+        for (Horse h : this.horses) {
+            if (h != null) {
+                h.goBackToStart();
+            }
+        }
+    }
+
+    public boolean isRaceValid() {
+        if (this.raceLength < 1) { // DONE: if race length is less than 1, the race continues until horses fall
+            System.out.println("Race too short or incorrect unit entered. ");
+            // DONE: common alternative solution is to assign all values with setters,
+            // which can then have the validation inbuilt to them, so the programmer can
+            // just call the setter instead of writing the validation every time
+            return false;
+        }
+
+        if (this.noHorses()) { // prevents a race from starting if there are no horses
+            System.out.println("No horses have been added to this race.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean getFinished() {
+        return this.finished;
+    }
+
+    private String raceTrackString() {
+        String output = "";
+
+        for (String s : this.raceTrack) {
+            output += s + "\n";
+        }
+
+        if (this.finished) {
+            if (this.winner != null) {
+                output += String.format("%nAnd the winner is %s %n", this.winner.getName()); // DONE: error if there is
+                                                                                             // no
+                                                                                             // winner
+            } else {
+                output += String.format("%nAll of the horses fell, the race cannot continue. ");
+            }
+        }
+
+        return output;
+    }
 }

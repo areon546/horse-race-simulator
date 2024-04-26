@@ -46,7 +46,12 @@ public class HorseRacer {
             r.addHorse(horses[i], i + 1);
         }
 
-        r.startRace();
+        // r.startRace();
+        System.out.println(r.getNextFrame());
+        System.out.println(r.getNextFrame());
+        System.out.println(r.getNextFrame());
+        System.out.println(r.getNextFrame());
+        System.out.println(r.getNextFrame());
 
         // System.out.println();
     }

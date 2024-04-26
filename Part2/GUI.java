@@ -25,34 +25,42 @@ public class GUI extends JFrame {
     // TIMER TEST ATTRTIBUTES
 
     private static Timer timer;
-    private static int counter = 3; // the duration
     private static int delay = 1000; // every 1 second
-    private static Color c = Color.RED;
     private static boolean started = false, raceFinished = false;
-    static int i = 0;
 
-    private static ActionListener action = new ActionListener() { // TODO make it autoupdate by itself, instead of
+    private static ActionListener action = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
-            if (!started) {
-                // creates the timer
-                timer = new Timer(delay, action);
-                started = true;
-                timer.setInitialDelay(0);
-                timer.start();
-            } else if (raceFinished) {
-                timer.stop();
-            } else {
-                // write the race
-                raceTrackLabel.setOpaque(true);
-                raceTrackLabel.setText("Wait for " + i + " sec" + " \n" + "asdad");
-                i++;
-            }
+            if (GUI.race != null) { // if there is a race that you can start
+                if (!started) { // if the race hasnt started yet
+                    // creates the timer
+                    timer = new Timer(delay, action);
+                    started = true;
+                    timer.setInitialDelay(0);
+                    timer.start();
+                } else if (raceFinished) { // if the race has finished, stop updating
+                    timer.stop();
+                } else {
+                    // write the race
+                    raceTrackLabel.setOpaque(true);
+                    if (!race.getFinished()) {
+                        raceTrackLabel.setText(race.getNextFrame());
+                    }
 
-        }
+                    raceFinished = race.getFinished();
+                }
+
+            } else {
+                raceTrackLabel.setText("You need to create a race first. \n\n\n");
+            }
+        };
     };
 
     // END OF TIMER TEST ATTRIBUTES
+
+    public static void setRace(Race r) {
+        GUI.race = r;
+    }
 
     // methods start here
     public static void home() {
@@ -78,9 +86,13 @@ public class GUI extends JFrame {
             }
         });
 
-        JPanel raceTrackPanel = createPanel(new GridLayout()); // TODO add racetrack as label i guess?
-        raceTrackLabel = createTextArea("Racet rack", mFont);
+        JPanel raceTrackPanel = createPanel(new BorderLayout());
+        raceTrackLabel = createTextArea("", mFont);
         raceTrackPanel.add(raceTrackLabel, BorderLayout.NORTH);
+
+        if (GUI.race == null) {
+            raceTrackLabel.setText("Please create a Race before running\n\n\n");
+        }
 
         // set up timer stuff
         timer = new Timer(delay, action);
