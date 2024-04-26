@@ -139,10 +139,6 @@ public class Race {
 
     }
 
-    public void startRaceGUI() {
-        GUI.setRace(this);
-        GUI.home();
-    }
 
     /**
      * Randomly make a horse move forward or fall depending
