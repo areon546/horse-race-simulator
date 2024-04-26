@@ -16,34 +16,55 @@ public class Race {
     private Horse winner;
     private double earnings = 100;
 
-    private static char boundaryChar = '=', emptyLane = ' ', start = ']', stop = '|';
+    private static char boundaryChar = '=', emptyLane = ' ', start = '|', stop = '|';
 
     /**
      * Constructor for objects of class Race
      * Initially there are no horses in the lanes
      * 
-     * @param distance the length of the racetrack (in metres/yards...)
+     * @param raceTrackLength the length of the racetrack in metres
+     * @param numLanes        the number of lanes that horses can run on, a upper
+     *                        value to the number of horses that can be added
+     * @param unit            the unit of the racetrack length, measured in meters,
+     *                        however it accepts the value "yards", upon which the
+     *                        race length will be the equivalent in meters
      */
-    public Race(int distance, int numHorses, String metersOrYards) {
+    public Race(int raceTrackLength, int numLanes, String unit) {
         // initialise instance variables
-        this.horses = new Horse[numHorses];
-        this.numberHorses = numHorses;
+        this.horses = new Horse[numLanes];
+        this.numberHorses = numLanes;
 
         // calculates race length in meters
-        if (metersOrYards.equals("yards")) {
-            this.raceLength = (int) Math.floor(distance * 0.9144);
-        } else if (metersOrYards.equals("meters")) {
-            this.raceLength = distance;
+        if (unit.equals("yards")) {
+            this.raceLength = (int) Math.ceil(raceTrackLength * 0.9144);
+        } else if (unit.equals("meters")) {
+            this.raceLength = raceTrackLength;
         } else {
             this.raceLength = 0;
         }
-
-        // TODO: calculates earnings for winning horse
     }
 
     // a default constructor for the Race class
-    public Race(int distance) {
-        this(distance, 3, "meters");
+    /**
+     * The default constructor for the race class if the number of lanes in a race
+     * is not specified. It also assumes the units to be meters.
+     * 
+     * @param raceTrackLength the length of the racetrack in metres
+     */
+    public Race(int raceTrackLength) {
+        this(raceTrackLength, 3, "meters");
+    }
+
+    /**
+     * A constructor for the race class if the unit is not specified. It assumes the
+     * unit is in meters.
+     * 
+     * @param raceTrackLength the length of the racetrack in metres
+     * @param numLanes        the number of lanes that horses can run on, a upper
+     *                        value to the number of horses that can be added
+     */
+    public Race(int raceTrackLength, int numLanes) {
+        this(raceTrackLength, numLanes, "meters");
     }
 
     /**
@@ -53,7 +74,7 @@ public class Race {
      * @param laneNumber the lane that the horse will be added to
      */
     public void addHorse(Horse theHorse, int laneNumber) { // DONE: add functionality for more than 3 lanes
-        if (laneNumber > this.numberHorses || laneNumber == 0) {
+        if (laneNumber > this.numberHorses || laneNumber <= 0) {
             System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
         }
 
@@ -78,15 +99,17 @@ public class Race {
             return;
         }
 
-        // reset all the lanes (all horses not fallen and back to 0).
+        if (this.noHorses()) { // prevents a race from starting if there are no horses
+            System.out.println("No horses have been added to this race.");
+            return;
+        }
+
+        // resets all the lanes (all horses not fallen and back to 0).
         for (Horse h : this.horses) {
             if (h != null) {
                 h.goBackToStart();
             }
         }
-
-        // print the initial state
-        printRace();
 
         while (!finished) {
             boolean allFallen = true, won = false;
@@ -177,15 +200,7 @@ public class Race {
      */
     private void printRace() {
 
-        // System.out.print('\u000C'); // clear the terminal window
-        // TODO make clear terminal window,
-
-        System.out.print("\033\143");
-        // TODO this works due to terminal escape sequences,
-        // it has a weird artifact that i dont the origin of
-        // i dont like this fix, mainly because i dont really understand it
-
-        // System.out.print("\u000C");
+        clearTerminalWindow();
 
         multiplePrint(boundaryChar, raceLength + 3); // top edge of track
         System.out.println();
@@ -204,24 +219,39 @@ public class Race {
         System.out.println();
     }
 
-    /**
-     * print a horse's lane during the race
-     * for example
-     * | X |
-     * to show how far the horse has run
-     */
-    private void printLane(Horse theHorse) {
-        // TODO it makes more sense to have printLane(laneNumber) instead of
-        // printLane(HORSE)
+    private void clearTerminalWindow() {
+        // clear the terminal window
+        System.out.print("\033\143");
 
-        // TODO currently, whenether a string needs to be outputed, it is printed
-        // immediately. instead
-        // to maintain future compatibility, instead it should be stored in a buffer of
-        // sorts, which can then
-        // be printed all at once
-        // this would make it easier to implement a GUI since the same method call can
-        // be made, however just returning the information that needs to be repeatedly
-        // printed - although, this might not even be
+        // other attemps
+        // System.out.print('\u000C');
+        // TODO make clear terminal window,
+
+        // System.out.print("\r");
+        // TODO this works due to terminal escape sequences,
+        // it has a weird artifact that i dont the origin of
+        // i dont like this fix, mainly because i dont really understand it
+
+        // System.out.print("\u000C");
+
+    }
+
+    private void printLane(int laneNumber) {
+        printLane(horses[laneNumber - 1]);
+    }
+
+    // TODO it makes more sense to have printLane(laneNumber) instead of
+    // printLane(HORSE)
+
+    // TODO currently, whenether a string needs to be outputed, it is printed
+    // immediately. instead
+    // to maintain future compatibility, instead it should be stored in a buffer of
+    // sorts, which can then
+    // be printed all at once
+    // this would make it easier to implement a GUI since the same method call can
+    // be made, however just returning the information that needs to be repeatedly
+    // printed - although, this might not even be
+    private void printLane(Horse theHorse) {
 
         // calculate how many spaces are needed before
         // and after the horse
@@ -274,11 +304,24 @@ public class Race {
      * @param aChar the character to Print
      */
     private void multiplePrint(char aChar, int times) {
-        int i = 0;
-        while (i < times) {
+        for (int i = 0; i < times; i++) {
             System.out.print(aChar);
-            i = i + 1;
         }
+    }
+
+    /**
+     * Check if there are any horses in horses array.
+     * 
+     * @return bool: false if there is a single horse in the race
+     */
+    private boolean noHorses() {
+        for (Horse h : this.horses) {
+            if (h != null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
