@@ -16,7 +16,8 @@ public class GUI extends JFrame {
     private static Color blue = new Color(0, 191, 255), white = new Color(255, 255, 255),
             offBlue = new Color(128, 128, 255);
     private static Font mFont = new Font("Segoe print", Font.BOLD, 18);
-    private static JLabel txtOutLabel = new JLabel(), raceTrackLabel;
+    private static JLabel txtOutLabel = new JLabel();
+    private static JTextArea raceTrackLabel;
 
     // standard attributes
     private static int pWidth = 580, pHeight = 400;
@@ -27,37 +28,32 @@ public class GUI extends JFrame {
     private static int counter = 3; // the duration
     private static int delay = 1000; // every 1 second
     private static Color c = Color.RED;
-    private static boolean red = true;
-    static int i = counter;
+    private static boolean started = false, raceFinished = false;
+    static int i = 0;
 
     private static ActionListener action = new ActionListener() { // TODO make it autoupdate by itself, instead of
         @Override
         public void actionPerformed(ActionEvent event) {
-            if (i == 0) {
-                timer.stop();
-                i = counter;
+            if (!started) {
+                // creates the timer
                 timer = new Timer(delay, action);
+                started = true;
                 timer.setInitialDelay(0);
                 timer.start();
+            } else if (raceFinished) {
+                timer.stop();
             } else {
-                c = red ? Color.GREEN : Color.RED;
-                red = !red;
-                raceTrackLabel.setBackground(c);
+                // write the race
                 raceTrackLabel.setOpaque(true);
-                raceTrackLabel.setText("Wait for " + i + " sec");
-                i--;
+                raceTrackLabel.setText("Wait for " + i + " sec" + " \n" + "asdad");
+                i++;
             }
- 
-            // {
-            //     TimeUnit.MILLISECONDS.sleep(300);
-            //     action.actionPerformed(event);
-            // } catch (Exception e) {
-            // }
 
         }
     };
 
-    // END OF TIMER TEST ATT
+    // END OF TIMER TEST ATTRIBUTES
+
     // methods start here
     public static void home() {
         // remove previous frame
@@ -83,8 +79,12 @@ public class GUI extends JFrame {
         });
 
         JPanel raceTrackPanel = createPanel(new GridLayout()); // TODO add racetrack as label i guess?
-        raceTrackLabel = createLabel("Racet rack", mFont);
+        raceTrackLabel = createTextArea("Racet rack", mFont);
         raceTrackPanel.add(raceTrackLabel, BorderLayout.NORTH);
+
+        // set up timer stuff
+        timer = new Timer(delay, action);
+        timer.setInitialDelay(0);
 
         JButton startRaceButton = createButton("Start Race", white, mFont, action);
 
@@ -265,8 +265,8 @@ public class GUI extends JFrame {
         return panel;
     }
 
-    private static JLabel createLabel(String text, Font font) {
-        JLabel label = new JLabel(text);
+    private static JTextArea createTextArea(String text, Font font) {
+        JTextArea label = new JTextArea(text);
         label.setFont(font);
         return label;
     }
