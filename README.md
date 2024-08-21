@@ -1,4 +1,4 @@
-# Horse Racing Simulator OOP Coursework
+# ECS414U-OOP Coursework: Horse Racing Simulator
 
 Part 1 contains a command line implementation of a horse racer simulator based on the assigned files given to complete the coursework. 
 Breed.java is used to determine horse breed, however has no affect on the Race class. 
